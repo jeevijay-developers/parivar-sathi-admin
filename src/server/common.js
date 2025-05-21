@@ -23,6 +23,7 @@ export const getAllNextOPDs = async () => {
     throw err;
   }
 };
+
 export const getAllPreviousOPDCamps = async () => {
   try {
     const res = await apiClient.get(
@@ -51,6 +52,7 @@ export const getUserLoggedIn = async (data) => {
 //     throw err;
 //   }
 // };
+
 export const uploadSingleCoupon = async (data) => {
   try {
     const res = await apiClient.post(`/api/coupon/add-single`, data);
@@ -59,6 +61,7 @@ export const uploadSingleCoupon = async (data) => {
     throw err;
   }
 };
+
 export const getAllCoupons = async (data) => {
   try {
     const res = await apiClient.get(`/api/coupon/get-all`, data);
@@ -67,3 +70,30 @@ export const getAllCoupons = async (data) => {
     throw err;
   }
 };
+
+export const getRegisteredPatients = async (data) => {
+  try{
+    const res = await apiClient.get('/registered-patients', data);
+    return res.data;
+  }catch(err){
+    throw err;
+  }
+}
+
+export const getRegisteredClinics = async(data) => {
+  try {
+    const res = await apiClient.get('/registered-clinics', data);
+    return res.data; 
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const getBlogs = async(data) => {
+  try {
+    const res = await apiClient.get('/blogs/getAllBlogs', data);
+    return res.data;
+  } catch (error) {
+    throw err;
+  }
+}
