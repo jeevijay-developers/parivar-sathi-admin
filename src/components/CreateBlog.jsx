@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import 'react-quill-new/dist/quill.snow.css';
 import { axiosInstance } from "../../lib/axiosInstance";
@@ -27,9 +27,9 @@ export default function CreateBlog() {
     formData.append("title", title);
     formData.append("desc", desc);
     formData.append("content", content);
+    
     if (bannerImage) formData.append("bannerImage", bannerImage);
     contentImages.forEach((img) => formData.append("contentImages", img));    
-    
     axiosInstance.post("/blogs/add-blog", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
