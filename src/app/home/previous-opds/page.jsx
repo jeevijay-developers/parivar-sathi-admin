@@ -13,7 +13,7 @@ const columns = [
   { key: "time", label: "Time" }
 ];
 
-const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
+const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('en-GB');
 
 const formatTime = (time) => {
   if (!time) return '';
@@ -29,7 +29,7 @@ const PreviousOPDsPage = () => {
   const [pageNo, setPageNo] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
-  const [itemsPerPage] = useState(10); 
+  const [itemsPerPage] = useState(7); 
   const [currentPage, setCurrentPage] = useState(1);
 
   const indexOfLastItem = currentPage * itemsPerPage;
