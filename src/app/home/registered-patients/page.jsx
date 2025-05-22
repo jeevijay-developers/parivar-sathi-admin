@@ -39,17 +39,17 @@ const TodaysQueryPage = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (!event.target.closest(".relative")) {
-      setOpenRow(null);
-    }
-  };
+        const handleClickOutside = (event) => {
+            if (!event.target.closest(".relative")) {
+                setOpenRow(null);
+            }
+        };
 
-  document.addEventListener("click", handleClickOutside);
-  return () => {
-    document.removeEventListener("click", handleClickOutside);
-  };
-}, []);
+        document.addEventListener("click", handleClickOutside);
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        };
+    }, []);
 
     useEffect(() => {
         setLoading(true);
@@ -146,16 +146,26 @@ const TodaysQueryPage = () => {
                                                                             if (typeof value === "boolean") return value;
                                                                             return value && key === "otherText";
                                                                         })
-                                                                        .map(([key, value], idx) => (
-                                                                            <li key={idx}>
-                                                                                {key === "otherText"
-                                                                                    ? value
-                                                                                    : key.charAt(0).toUpperCase() + key.slice(1)}
-                                                                            </li>
-                                                                        ))}
+                                                                        .map(([key, value], idx, arr) =>
+                                                                            arr.length > 0 ? (
+                                                                                <li key={idx}>
+                                                                                    {key === "otherText"
+                                                                                        ? value
+                                                                                        : key.charAt(0).toUpperCase() + key.slice(1)}
+                                                                                </li>
+                                                                            ) : null
+                                                                        )}
+                                                                    {Object.entries(row.preExistingConditions).every(
+                                                                        ([key, value]) =>
+                                                                            (typeof value === "boolean" && !value) ||
+                                                                            (key === "otherText" && !value)
+                                                                    ) && (
+                                                                            <li className="text-gray-500 italic list-none">No medical history</li>
+                                                                        )}
                                                                 </ul>
                                                             </div>
                                                         )}
+
                                                     </div>
                                                 ) : col.key === "index" ? (
                                                     indexOfFirstItem + currentItems.indexOf(row) + 1

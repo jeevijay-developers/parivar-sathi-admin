@@ -28,7 +28,6 @@ const BlogTable = () => {
             .then((res) => {
                 setData(res);
                 console.log("Data: ",res);
-                
             })
             .catch((err) => {
                 console.error(err);
