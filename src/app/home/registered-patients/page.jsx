@@ -62,7 +62,7 @@ const TodaysQueryPage = () => {
             }).finally(() => setLoading(false));
     }, []);
 
-    const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
+    const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('en-GB');
 
     const formatTime = (dateStr) => {
         const date = new Date(dateStr);

@@ -13,7 +13,7 @@ const columns = [
   { key: "time", label: "Time" }
 ];
 
-const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
+const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('en-GB');
 
 // console.log("Date: ", formatDate("2023-10-01T12:00:00Z"));
 const formatTime = (time) => {

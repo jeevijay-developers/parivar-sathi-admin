@@ -70,7 +70,7 @@ const ClinicsTable = () => {
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
-    return new Date(dateStr).toLocaleDateString();
+    return new Date(dateStr).toLocaleDateString('en-GB');
   };
 
   const formatTime = (dateStr) => {
