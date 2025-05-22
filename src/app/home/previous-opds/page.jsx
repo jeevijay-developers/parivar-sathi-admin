@@ -3,6 +3,11 @@ import React, { useEffect, useState } from "react";
 import { getAllPreviousOPDCamps } from "@/server/common";
 import { ClipLoader } from "react-spinners";
 import Pagination from "@/components/Pagination";
+import { MdDelete } from "react-icons/md";
+import { toast } from "react-toastify";
+import apiClient from "@/server/axios";
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const columns = [
   { key: "image", label: "" },
@@ -10,7 +15,8 @@ const columns = [
   { key: "title", label: "Title" },
   { key: "location", label: "Location" },
   { key: "date", label: "Date" },
-  { key: "time", label: "Time" }
+  { key: "time", label: "Time" },
+  { key: "action", label: "Action" }
 ];
 
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString('en-GB');
@@ -38,6 +44,32 @@ const PreviousOPDsPage = () => {
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handleDelete = async (id) => {
+    confirmAlert({
+      title: 'Confirm to submit',
+      message: 'Are you sure to do this.',
+      buttons: [
+        {
+          label: 'Yes, Delete',
+          onClick: async () => {
+            try {
+              const res = await apiClient.delete(`/opds/opdcamps/${id}`);
+              toast.success("OPD deleted");
+              console.log("Deletion response: ", res);
+              setData((prev) => prev.filter((opd) => opd._id !== id));
+            } catch (error) {
+              toast.error("Error in deleting OPD");
+            }
+          }
+        },
+        {
+          label: 'No',
+          onClick: () => {}
+        }
+      ]
+    });
+
+  }
 
   useEffect(() => {
     setLoading(true);
@@ -121,9 +153,15 @@ const PreviousOPDsPage = () => {
                             className="w-12 h-12 object-cover rounded-md mx-auto"
                           />
                         ) : col.key === "time" ? (
-                          formatTime(row[col.key])
-                        ) : col.key === "date" ? (
+                          formatTime(row[col.key])                        ) : col.key === "date" ? (
                           formatDate(row[col.key])
+                        ) : col.key === "action" ? (
+                          <button
+                            onClick={() => handleDelete(row._id)}
+                            className="text-red-500 hover:text-red-700 transition-colors"
+                          >
+                            <MdDelete size={20} />
+                          </button>
                         ) : (
                           row[col.key]
                         )}
