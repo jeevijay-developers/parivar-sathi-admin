@@ -63,7 +63,12 @@ const Navbar = () => {
           label: "Registered Patients",
           icon: <CgProfile />,
           href: "/home/registered-patients"
-        }
+        },
+        {
+          label: "Consultation Enquiry",
+          icon: <CgProfile />,
+          href: "/home/consult-enquiry"
+        },
       ]
     },
     clinic: {
