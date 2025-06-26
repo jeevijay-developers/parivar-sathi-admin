@@ -1,4 +1,4 @@
-import apiClient from "./axios";
+import apiClient from "./axios.js";
 
 // const query = process.env.NEXT_PUBLIC_API_URL_LOCAL;
 
@@ -7,6 +7,16 @@ export const getAllTodaysOPDCamps = async () => {
     const res = await apiClient.get(`${process.env.NEXT_PUBLIC_BASE_URL}/opds/todays-opdcamps`);
     console.log("Todays data", res.data);
     
+    return res.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getAllConsultatEnquiry = async () => {
+  try {
+    const res = await apiClient.get(`${process.env.NEXT_PUBLIC_BASE_URL}/consult/get-consults`);
+    console.log("Consultation Enquiry Data", res.data);    
     return res.data;
   } catch (err) {
     throw err;
