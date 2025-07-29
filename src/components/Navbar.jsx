@@ -6,12 +6,13 @@ import { FaCalendar, FaClock, FaBlog, FaChevronDown, FaClinicMedical } from "rea
 import { LuCalendarClock } from "react-icons/lu";
 import { CgProfile } from "react-icons/cg";
 import { RiPagesLine } from "react-icons/ri";
+import Image from "next/image";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
-  
+
   const dropdownRef = useRef(null);
 
   // Close dropdowns when clicking outside
@@ -58,7 +59,7 @@ const Navbar = () => {
     patients: {
       label: "Patients",
       icon: <FaCalendar />,
-      items:[
+      items: [
         {
           label: "Registered Patients",
           icon: <CgProfile />,
@@ -74,7 +75,7 @@ const Navbar = () => {
     clinic: {
       label: "Clinic",
       icon: <FaClinicMedical />,
-      items:[
+      items: [
         {
           label: "Registered Clinics",
           icon: <IoAddCircleSharp />,
@@ -111,15 +112,18 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-200 dark:bg-gray-900 shadow-md rounded-b-xl">
+    <nav className="bg-blue-200 dark:bg-gray-900 shadow-md">
       <div className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div className="flex justify-between h-16 items-center">
           {/* Logo Section */}
-          <div className="w-[65px] flex items-center">
-            <img className="w-full" src="/logo.svg" alt="parivar-sathi-logo" />
-            <div className="text-2xl font-bold flex gap-1">
-              Parivar <span className="text-blue-500">Saathi</span>
-            </div>
+          <div className="flex items-center space-x-3">
+            <Image
+              src="/logo.svg"
+              alt="Parivar Saathi Logo"
+              width={100}
+              height={100}
+              className="object-fit"
+            />
           </div>
 
           {/* Desktop Menu */}
@@ -148,7 +152,7 @@ const Navbar = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="relative">
               <button
                 onClick={() => toggleDropdown('patients')}
@@ -172,7 +176,7 @@ const Navbar = () => {
                 </div>
               )}
             </div>
-            
+
             <div className="relative">
               <button
                 onClick={() => toggleDropdown('blog')}
