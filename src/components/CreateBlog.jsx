@@ -38,6 +38,11 @@ export default function CreateBlog() {
     .then((response) => {
       console.log("Blog submitted successfully:", response.data);
       toast.success("Blog submitted successfully!");
+      setTitle("");
+      setDesc("");
+      setContent("");
+      setBannerImage(null);
+      setContentImages([]);
     })
     .catch((error) => {
       console.error("Error submitting blog:", error);
