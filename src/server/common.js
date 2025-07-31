@@ -104,6 +104,33 @@ export const getBlogs = async(data) => {
     const res = await apiClient.get('/blogs/getAllBlogs', data);
     return res.data;
   } catch (error) {
-    throw err;
+    throw error;
+  }
+}
+
+export const getAllProfessionals = async(data) => {
+  try {
+    const res = await apiClient.get('/joinus/', data);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const getProfessionalById = async(id) => {
+  try {
+    const res = await apiClient.get(`/joinus/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const deleteProfessionalById = async(id) => {
+  try {
+    const res = await apiClient.delete(`/joinus/${id}`);
+    return res.data;
+  } catch (error) {
+    throw error;
   }
 }
