@@ -104,7 +104,7 @@ const ProfessionalsTable = () => {
     <div className="min-h-full dark:bg-gray-700 p-6">
       <div className="max-w-full mx-auto">
         <h1 className="text-3xl font-bold text-blue-700 dark:text-blue-400 mb-8">
-          Registered Professionals
+          Registered Job seekers/Doctors
         </h1>
         <div className="overflow-x-auto rounded-lg shadow-lg">
           <table className="min-w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
