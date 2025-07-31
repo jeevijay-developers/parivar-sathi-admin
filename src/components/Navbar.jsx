@@ -82,9 +82,9 @@ const Navbar = () => {
           href: "/home/registered-clinics"
         },
         {
-          label: "Registered Professionals",
+          label: "Registered Doctors",
           icon: <IoAddCircleSharp />,
-          href: "/home/registered-professionals"
+          href: "/home/registered-doctors"
         },
 
       ]
