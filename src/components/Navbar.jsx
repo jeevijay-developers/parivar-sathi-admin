@@ -73,14 +73,20 @@ const Navbar = () => {
       ]
     },
     clinic: {
-      label: "Clinic",
+      label: "Join partners",
       icon: <FaClinicMedical />,
       items: [
         {
           label: "Registered Clinics",
           icon: <IoAddCircleSharp />,
           href: "/home/registered-clinics"
-        }
+        },
+        {
+          label: "Registered Professionals",
+          icon: <IoAddCircleSharp />,
+          href: "/home/registered-professionals"
+        },
+
       ]
     },
     opds: {
@@ -139,7 +145,7 @@ const Navbar = () => {
                 </span>
               </button>
               {activeDropdown === 'clinic' && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 py-1 border border-gray-200">
+                <div className="absolute right-0 mt-2 w-max bg-white rounded-lg shadow-lg z-10 py-1 border border-gray-200">
                   {navItems.clinic.items.map((item, index) => (
                     <a
                       key={index}
