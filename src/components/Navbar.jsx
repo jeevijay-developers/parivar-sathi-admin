@@ -2,16 +2,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid";
 import { IoAddCircleSharp, IoLogOut } from "react-icons/io5";
-import { FaCalendar, FaClock, FaBlog, FaChevronDown, FaClinicMedical } from "react-icons/fa";
+import { FaCalendar, FaClock, FaBlog, FaChevronDown, FaClinicMedical, FaCog } from "react-icons/fa";
 import { LuCalendarClock } from "react-icons/lu";
 import { CgProfile } from "react-icons/cg";
 import { RiPagesLine } from "react-icons/ri";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import PasswordChangeModal from "./PasswordChangeModal";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const router = useRouter();
 
   const dropdownRef = useRef(null);
 
@@ -28,11 +31,6 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("lnp-landing-admin-page");
-    window.location.href = "/";
-  };
 
   const toggleDropdown = (dropdown) => {
     setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
@@ -233,15 +231,42 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Logout Button */}
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="px-4 py-2 rounded-lg font-semibold text-white bg-red-500 hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg flex items-center space-x-2 transform hover:scale-105"
-            >
-              <span className="flex items-center gap-2">
-                <IoLogOut /> Logout
-              </span>
-            </button>
+            {/* Profile Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => toggleDropdown('profile')}
+                className="px-3 py-2 rounded-lg font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-200 shadow-md hover:shadow-lg flex items-center space-x-2 transform hover:scale-105"
+              >
+                <span className="flex items-center gap-2">
+                  <CgProfile /> Profile <FaChevronDown className={`ml-1 transform ${activeDropdown === 'profile' ? 'rotate-180' : ''} transition-transform duration-200`} />
+                </span>
+              </button>
+              {activeDropdown === 'profile' && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10 py-1 border border-gray-200">
+                  <button
+                    onClick={() => {
+                      setIsPasswordModalOpen(true);
+                      setActiveDropdown(null);
+                    }}
+                    className="w-full px-4 py-2 text-gray-800 hover:bg-blue-100 flex items-center gap-2 text-left"
+                  >
+                    <FaCog /> Change Password
+                  </button>
+                  <hr className="my-1" />
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem("admin-token");
+                      localStorage.removeItem("lnp-landing-admin-page");
+                      router.push("/");
+                      setActiveDropdown(null);
+                    }}
+                    className="w-full px-4 py-2 text-red-600 hover:bg-red-100 flex items-center gap-2 text-left"
+                  >
+                    <IoLogOut /> Logout
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -306,42 +331,42 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Mobile Logout Button */}
-            <button
-              onClick={() => setIsModalOpen(true)}
-              className="w-full px-4 py-3 rounded-lg font-semibold text-white bg-red-500 hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
-            >
-              <span className="flex items-center gap-2">
-                <IoLogOut /> Logout
-              </span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Confirmation Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/70 bg-opacity-50">
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
-            <p className="mb-4">Are you sure you want to logout?</p>
-            <div className="flex justify-end">
+            {/* Mobile Profile Section */}
+            <div className="border-t border-gray-200 pt-2 mt-2">
               <button
-                onClick={() => setIsModalOpen(false)}
-                className="mr-2 px-4 py-2 rounded-md text-gray-700 bg-gray-300 hover:bg-gray-400 transition"
+                onClick={() => {
+                  setIsPasswordModalOpen(true);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full px-4 py-2 rounded-lg font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
               >
-                Cancel
+                <span className="flex items-center gap-2">
+                  <FaCog /> Change Password
+                </span>
               </button>
               <button
-                onClick={handleLogout}
-                className="px-4 py-2 rounded-md text-white bg-red-500 hover:bg-red-600 transition"
+                onClick={() => {
+                  localStorage.removeItem("admin-token");
+                  localStorage.removeItem("lnp-landing-admin-page");
+                  router.push("/");
+                  setIsMenuOpen(false);
+                }}
+                className="w-full mt-2 px-4 py-2 rounded-lg font-semibold text-white bg-red-500 hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
               >
-                Logout
+                <span className="flex items-center gap-2">
+                  <IoLogOut /> Logout
+                </span>
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Password Change Modal */}
+      <PasswordChangeModal
+        isOpen={isPasswordModalOpen}
+        onClose={() => setIsPasswordModalOpen(false)}
+      />
     </nav>
   );
 };

@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toast";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { axiosInstance } from "@/lib/axiosInstance";
 
 const Login = () => {
   const [form, setForm] = useState({ username: "", password: "" });
@@ -24,7 +25,7 @@ const Login = () => {
     }
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.username || !form.password) {
       setError("Please enter both username and password.");
@@ -34,22 +35,33 @@ const Login = () => {
     setLoading(true);
     setError("");
     
-    // Simulate loading delay
-    setTimeout(() => {
-      if(form.username === "admin@gmail.com" && form.password === "password") {
-        toast.success("Login successful!");
-        router.push("/home/todays-opd");
+    try {
+      const response = await axiosInstance.post("/admin/login", {
+        email: form.username,
+        password: form.password,
+      });
+
+      if (response.data.success) {
+        toast.success(response.data.message);
+        
+        // Store token and admin info
+        localStorage.setItem("admin-token", response.data.token);
         localStorage.setItem(
           "lnp-landing-admin-page",
-          JSON.stringify({ role: "admin" })
+          JSON.stringify({ role: "admin", email: response.data.admin.email })
         );
-        setLoading(false);
-        return;
+        
+        // Redirect to dashboard
+        router.push("/home/todays-opd");
       }
-      
-      toast.error("Invalid credentials");
+    } catch (err) {
+      console.error("Login error:", err);
+      const errorMsg = err.response?.data?.message || "Login failed. Please try again.";
+      setError(errorMsg);
+      toast.error(errorMsg);
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (
