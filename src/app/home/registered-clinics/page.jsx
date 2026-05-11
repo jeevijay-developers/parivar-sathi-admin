@@ -338,7 +338,7 @@ const ClinicsTable = () => {
       {/* Edit Modal */}
       {showEditModal && editingClinic && (
         <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-2xl w-full mx-4 max-h-full overflow-y-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-2xl w-full mx-4 max-h-full overflow-y-auto">
             <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Edit Clinic</h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
