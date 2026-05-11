@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import Pagination from "@/components/Pagination";
-import { getRegisteredClinics } from "@/server/common";
+import { getRegisteredClinics, editClinic, deleteClinic } from "@/server/common";
 
 const columns = [
   { key: "index", label: "Sr No." },
@@ -20,7 +20,8 @@ const columns = [
   { key: "interests", label: "Interests" },
   { key: "clinicDescription", label: "Description" },
   { key: "brochureFile", label: "Brochure" },
-  { key: "createdAt", label: "Registration Date" }
+  { key: "createdAt", label: "Registration Date" },
+  { key: "actions", label: "Actions" }
 ];
 
 const ClinicsTable = () => {
@@ -31,6 +32,12 @@ const ClinicsTable = () => {
   const [openServices, setOpenServices] = useState(null);
   const [openInterests, setOpenInterests] = useState(null);
   const [openDescription, setOpenDescription] = useState(null);
+  const [editingClinic, setEditingClinic] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingClinicId, setDeletingClinicId] = useState(null);
+  const [editFormData, setEditFormData] = useState({});
+  const [submitting, setSubmitting] = useState(false);
   const [openClinicAddress, setOpenClinicAddress] = useState(null);
 
   // Calculate pagination variables
@@ -81,6 +88,51 @@ const ClinicsTable = () => {
     const period = hours >= 12 ? "PM" : "AM";
     const displayHour = hours % 12 === 0 ? 12 : hours % 12;
     return `${displayHour}:${minutes} ${period}`;
+  };
+
+  const handleEditClick = (clinic) => {
+    setEditingClinic(clinic);
+    setEditFormData({...clinic});
+    setShowEditModal(true);
+  };
+
+  const handleDeleteClick = (clinicId) => {
+    setDeletingClinicId(clinicId);
+    setShowDeleteModal(true);
+  };
+
+  const handleEditSubmit = async () => {
+    try {
+      setSubmitting(true);
+      await editClinic(editingClinic._id, editFormData);
+      // Refresh data
+      const res = await getRegisteredClinics();
+      setData(res);
+      setShowEditModal(false);
+      setEditingClinic(null);
+    } catch (error) {
+      console.error('Error updating clinic:', error);
+      alert('Error updating clinic');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      setSubmitting(true);
+      await deleteClinic(deletingClinicId);
+      // Refresh data
+      const res = await getRegisteredClinics();
+      setData(res);
+      setShowDeleteModal(false);
+      setDeletingClinicId(null);
+    } catch (error) {
+      console.error('Error deleting clinic:', error);
+      alert('Error deleting clinic');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -249,6 +301,21 @@ const ClinicsTable = () => {
                           >
                             {row[col.key]}
                           </a>
+                        ) : col.key === "actions" ? (
+                          <div className="flex gap-2 justify-center">
+                            <button
+                              onClick={() => handleEditClick(row)}
+                              className="px-3 py-2 text-sm font-medium bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-200"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteClick(row._id)}
+                              className="px-3 py-2 text-sm font-medium bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         ) : (
                           row[col.key] || <span className="text-gray-400">-</span>
                         )}
@@ -267,6 +334,146 @@ const ClinicsTable = () => {
           currentPage={currentPage}
         />
       </div>
+
+      {/* Edit Modal */}
+      {showEditModal && editingClinic && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-2xl w-full mx-4 max-h-full overflow-y-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Edit Clinic</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Clinic Name</label>
+                <input
+                  type="text"
+                  value={editFormData.clinicName || ""}
+                  onChange={(e) => setEditFormData({...editFormData, clinicName: e.target.value})}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Country</label>
+                <select
+                  value={editFormData.country || ""}
+                  onChange={(e) => setEditFormData({...editFormData, country: e.target.value})}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="">Select Country</option>
+                  <option value="India">India</option>
+                  <option value="Pakistan">Pakistan</option>
+                  <option value="Bangladesh">Bangladesh</option>
+                  <option value="Nepal">Nepal</option>
+                  <option value="Sri Lanka">Sri Lanka</option>
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Clinic Address</label>
+                <textarea
+                  value={editFormData.clinicAddress || ""}
+                  onChange={(e) => setEditFormData({...editFormData, clinicAddress: e.target.value})}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                  rows="2"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Clinic Phone</label>
+                <input
+                  type="text"
+                  value={editFormData.clinicPhone || ""}
+                  onChange={(e) => setEditFormData({...editFormData, clinicPhone: e.target.value})}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Clinic Email</label>
+                <input
+                  type="email"
+                  value={editFormData.clinicEmail || ""}
+                  onChange={(e) => setEditFormData({...editFormData, clinicEmail: e.target.value})}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Contact Name</label>
+                <input
+                  type="text"
+                  value={editFormData.contactName || ""}
+                  onChange={(e) => setEditFormData({...editFormData, contactName: e.target.value})}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Contact Position</label>
+                <input
+                  type="text"
+                  value={editFormData.contactPosition || ""}
+                  onChange={(e) => setEditFormData({...editFormData, contactPosition: e.target.value})}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Contact Phone</label>
+                <input
+                  type="text"
+                  value={editFormData.contactPhone || ""}
+                  onChange={(e) => setEditFormData({...editFormData, contactPhone: e.target.value})}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Contact Email</label>
+                <input
+                  type="email"
+                  value={editFormData.contactEmail || ""}
+                  onChange={(e) => setEditFormData({...editFormData, contactEmail: e.target.value})}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white rounded-md hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleEditSubmit}
+                disabled={submitting}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition disabled:opacity-50"
+              >
+                {submitting ? "Saving..." : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-sm w-full mx-4">
+            <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Delete Clinic</h2>
+            <p className="text-gray-700 dark:text-gray-300 mb-6">
+              Are you sure you want to delete this clinic? This action cannot be undone.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-white rounded-md hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                disabled={submitting}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition disabled:opacity-50"
+              >
+                {submitting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

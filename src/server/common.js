@@ -83,7 +83,7 @@ export const getAllCoupons = async (data) => {
 
 export const getRegisteredPatients = async (data) => {
   try{
-    const res = await apiClient.get('/registered-patients', data);
+    const res = await apiClient.get('/api/registered-patients', { params: data });
     return res.data;
   }catch(err){
     throw err;
@@ -92,8 +92,26 @@ export const getRegisteredPatients = async (data) => {
 
 export const getRegisteredClinics = async(data) => {
   try {
-    const res = await apiClient.get('/registered-clinics', data);
+    const res = await apiClient.get('/api/registered-clinics', { params: data });
     return res.data; 
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const editClinic = async(clinicId, data) => {
+  try {
+    const res = await apiClient.put(`/api/clinic/${clinicId}`, data);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const deleteClinic = async(clinicId) => {
+  try {
+    const res = await apiClient.delete(`/api/clinic/${clinicId}`);
+    return res.data;
   } catch (error) {
     throw error;
   }
