@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import Pagination from "@/components/Pagination";
 import { getRegisteredClinics, editClinic, deleteClinic } from "@/server/common";
+import { FaEye, FaPen, FaTrashAlt, FaList, FaFileAlt } from "react-icons/fa";
 
 const columns = [
   { key: "index", label: "Sr No." },
@@ -196,9 +197,10 @@ const ClinicsTable = () => {
                           <div className="relative inline-block text-left">
                             <button
                               onClick={() => setOpenServices(openServices === row._id ? null : row._id)}
-                              className="px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-3xl hover:bg-blue-700 transition duration-200"
+                              className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-200"
+                              title="View services"
                             >
-                              View
+                              <FaList size={13} />
                             </button>
                             {openServices === row._id && row.services && (
                               <div className="absolute z-10 mt-2 w-60 origin-top-right right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-4 text-left text-sm">
@@ -223,9 +225,10 @@ const ClinicsTable = () => {
                           <div className="relative inline-block text-left">
                             <button
                               onClick={() => setOpenInterests(openInterests === row._id ? null : row._id)}
-                              className="px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-3xl hover:bg-blue-700 transition duration-200"
+                              className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-200"
+                              title="View interests"
                             >
-                              View
+                              <FaList size={13} />
                             </button>
                             {openInterests === row._id && row.interests && (
                               <div className="absolute z-10 mt-2 w-60 origin-top-right right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-4 text-left text-sm">
@@ -250,9 +253,10 @@ const ClinicsTable = () => {
                           <div className="relative inline-block text-left">
                             <button
                               onClick={() => setOpenClinicAddress(openClinicAddress === row._id ? null : row._id)}
-                              className="px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-3xl hover:bg-blue-700 transition duration-200"
+                              className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-200"
+                              title="View address"
                             >
-                              View
+                              <FaEye size={13} />
                             </button>
                             {openClinicAddress === row._id && row.clinicAddress && (
                               <div className="absolute z-10 mt-2 w-72 origin-top-right right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-4 text-left text-sm">
@@ -264,9 +268,10 @@ const ClinicsTable = () => {
                           <div className="relative inline-block text-left">
                             <button
                               onClick={() => setOpenDescription(openDescription === row._id ? null : row._id)}
-                              className="px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-3xl hover:bg-blue-700 transition duration-200"
+                              className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-200"
+                              title="View description"
                             >
-                              View
+                              <FaFileAlt size={13} />
                             </button>
                             {openDescription === row._id && row.clinicDescription && (
                               <div className="absolute z-10 mt-2 w-72 origin-top-right right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg p-4 text-left text-sm">
@@ -305,15 +310,17 @@ const ClinicsTable = () => {
                           <div className="flex gap-2 justify-center">
                             <button
                               onClick={() => handleEditClick(row)}
-                              className="px-3 py-2 text-sm font-medium bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition duration-200"
+                              className="p-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition duration-200"
+                              title="Edit"
                             >
-                              Edit
+                              <FaPen size={13} />
                             </button>
                             <button
                               onClick={() => handleDeleteClick(row._id)}
-                              className="px-3 py-2 text-sm font-medium bg-red-600 text-white rounded-md hover:bg-red-700 transition duration-200"
+                              className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition duration-200"
+                              title="Delete"
                             >
-                              Delete
+                              <FaTrashAlt size={13} />
                             </button>
                           </div>
                         ) : (

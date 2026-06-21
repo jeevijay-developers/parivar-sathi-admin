@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { getRegisteredPatients } from "@/server/common";
 import { ClipLoader } from "react-spinners";
 import Pagination from "@/components/Pagination";
+import { FaEye, FaList, FaCommentMedical } from "react-icons/fa";
 
 const columns = [
     { key: "index", label: "Sr No." },
@@ -133,9 +134,10 @@ const TodaysQueryPage = () => {
                                                     <div className="relative inline-block text-left">
                                                         <button
                                                             onClick={() => setOpenRow(openRow === row._id ? null : row._id)}
-                                                            className="px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-4xl hover:bg-blue-700 transition duration-200"
+                                                            className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-200"
+                                                            title="View medical history"
                                                         >
-                                                            View
+                                                            <FaList size={13} />
                                                         </button>
 
                                                         {openRow === row._id && (
@@ -186,8 +188,10 @@ const TodaysQueryPage = () => {
                                                                 onClick={() =>
                                                                     setOpenSymptomId(openSymptomId === row._id ? null : row._id)
                                                                 }
-                                                                className="px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-4xl hover:bg-blue-700 transition duration-200">
-                                                                View
+                                                                className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-200"
+                                                                title="View symptoms"
+                                                            >
+                                                                <FaCommentMedical size={13} />
                                                             </button>
 
                                                             {openSymptomId === row._id && row.symptoms && (
@@ -202,8 +206,10 @@ const TodaysQueryPage = () => {
                                                                 onClick={() =>
                                                                     setOpenPrimaryConcert(openPrimaryConcern === row._id ? null : row._id)
                                                                 }
-                                                                className="px-3 py-2 text-sm font-medium bg-blue-600 text-white rounded-4xl hover:bg-blue-700 transition duration-200">
-                                                                View
+                                                                className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-200"
+                                                                title="View primary concern"
+                                                            >
+                                                                <FaEye size={13} />
                                                             </button>
 
                                                             {openPrimaryConcern === row._id && row.primaryConcern && (

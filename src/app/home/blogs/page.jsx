@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import Pagination from "@/components/Pagination";
 import { X } from "lucide-react";
-import { getBlogs } from "@/server/common";
+import { FaEye, FaPen, FaTrashAlt } from "react-icons/fa";
+import { toast } from "react-toast";
+import { getBlogs, deleteBlog } from "@/server/common";
+import CreateBlog from "@/components/CreateBlog";
 
 
 const BlogTable = () => {
@@ -13,6 +16,51 @@ const BlogTable = () => {
     const [itemsPerPage] = useState(6);
     const [selectedBlog, setSelectedBlog] = useState(null);
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [editBlog, setEditBlog] = useState(null);
+    const [editDrawerOpen, setEditDrawerOpen] = useState(false);
+    const [deletingId, setDeletingId] = useState(null);
+
+    const refreshBlogs = () => {
+        setLoading(true);
+        getBlogs()
+            .then((res) => setData(res))
+            .catch((err) => console.error(err))
+            .finally(() => setLoading(false));
+    };
+
+    const openEditDrawer = (blog) => {
+        setEditBlog(blog);
+        document.body.style.overflow = "hidden";
+        setTimeout(() => setEditDrawerOpen(true), 10);
+    };
+
+    const closeEditDrawer = () => {
+        setEditDrawerOpen(false);
+        setTimeout(() => {
+            setEditBlog(null);
+            document.body.style.overflow = "auto";
+        }, 300);
+    };
+
+    const handleEditSuccess = () => {
+        closeEditDrawer();
+        refreshBlogs();
+    };
+
+    const handleDelete = async (blog) => {
+        if (!window.confirm(`Delete "${blog.title}"? This cannot be undone.`)) return;
+        setDeletingId(blog._id);
+        try {
+            await deleteBlog(blog._id);
+            toast.success("Blog deleted successfully!");
+            refreshBlogs();
+        } catch (err) {
+            console.error("Error deleting blog:", err);
+            toast.error("Error deleting blog. Please try again.");
+        } finally {
+            setDeletingId(null);
+        }
+    };
 
     // Calculate pagination variables
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -23,16 +71,7 @@ const BlogTable = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     useEffect(() => {
-        setLoading(true);
-        getBlogs()
-            .then((res) => {
-                setData(res);
-                console.log("Data: ",res);
-            })
-            .catch((err) => {
-                console.error(err);
-            })
-            .finally(() => setLoading(false));
+        refreshBlogs();
     }, []);
 
     // Open drawer with animation
@@ -152,12 +191,30 @@ const BlogTable = () => {
                                             </p>
                                         </td>
                                         <td className="px-4 py-4 border-b text-center border-gray-200 dark:border-gray-700">
-                                            <button
-                                                onClick={() => openDrawer(blog)}
-                                                className="view-button px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-200"
-                                            >
-                                                View
-                                            </button>
+                                            <div className="flex items-center justify-center gap-2">
+                                                <button
+                                                    onClick={() => openDrawer(blog)}
+                                                    className="view-button p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition duration-200"
+                                                    title="View"
+                                                >
+                                                    <FaEye size={15} />
+                                                </button>
+                                                <button
+                                                    onClick={() => openEditDrawer(blog)}
+                                                    className="edit-button p-2 bg-yellow-500 text-white rounded-full hover:bg-yellow-600 transition duration-200"
+                                                    title="Edit"
+                                                >
+                                                    <FaPen size={14} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(blog)}
+                                                    disabled={deletingId === blog._id}
+                                                    className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition duration-200 disabled:opacity-60"
+                                                    title="Delete"
+                                                >
+                                                    <FaTrashAlt size={14} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
@@ -237,6 +294,29 @@ const BlogTable = () => {
                                 )}
                             </div>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit drawer (reuses CreateBlog form in edit mode) */}
+            {editBlog && (
+                <div className={`fixed inset-0 bg-black/80 transition-opacity duration-300 z-40 flex justify-end ${editDrawerOpen ? 'bg-opacity-50' : 'bg-opacity-0 pointer-events-none'}`}>
+                    <div
+                        className={`bg-white dark:bg-gray-800 w-full max-w-3xl overflow-y-auto h-full transform transition-all duration-300 ease-in-out ${editDrawerOpen ? 'translate-x-0' : 'translate-x-full'}`}
+                        style={{ boxShadow: "-4px 0 15px rgba(0, 0, 0, 0.1)" }}
+                    >
+                        <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
+                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                                Edit Blog
+                            </h2>
+                            <button
+                                onClick={closeEditDrawer}
+                                className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+                            >
+                                <X size={24} className="text-gray-800 dark:text-gray-200" />
+                            </button>
+                        </div>
+                        <CreateBlog existingBlog={editBlog} onSuccess={handleEditSuccess} />
                     </div>
                 </div>
             )}

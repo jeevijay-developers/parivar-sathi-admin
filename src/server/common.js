@@ -1,4 +1,5 @@
 import apiClient from "./axios.js";
+import { axiosInstance } from "../lib/axiosInstance";
 
 // const query = process.env.NEXT_PUBLIC_API_URL_LOCAL;
 
@@ -47,7 +48,7 @@ export const getAllPreviousOPDCamps = async () => {
 
 export const getUserLoggedIn = async (data) => {
   try {
-    const res = await apiClient.post(`/api/auth/login`, data);
+    const res = await apiClient.post(`/admin/login`, data);
     return res.data;
   } catch (err) {
     throw err;
@@ -65,7 +66,7 @@ export const getUserLoggedIn = async (data) => {
 
 export const uploadSingleCoupon = async (data) => {
   try {
-    const res = await apiClient.post(`/api/coupon/add-single`, data);
+    const res = await apiClient.post(`/coupon/add-single`, data);
     return res.data;
   } catch (err) {
     throw err;
@@ -74,7 +75,7 @@ export const uploadSingleCoupon = async (data) => {
 
 export const getAllCoupons = async (data) => {
   try {
-    const res = await apiClient.get(`/api/coupon/get-all`, data);
+    const res = await apiClient.get(`/coupon/get-all`, data);
     return res.data;
   } catch (err) {
     throw err;
@@ -83,7 +84,7 @@ export const getAllCoupons = async (data) => {
 
 export const getRegisteredPatients = async (data) => {
   try{
-    const res = await apiClient.get('/api/registered-patients', { params: data });
+    const res = await apiClient.get('/registered-patients', { params: data });
     return res.data;
   }catch(err){
     throw err;
@@ -92,8 +93,8 @@ export const getRegisteredPatients = async (data) => {
 
 export const getRegisteredClinics = async(data) => {
   try {
-    const res = await apiClient.get('/api/registered-clinics', { params: data });
-    return res.data; 
+    const res = await apiClient.get('/registered-clinics', { params: data });
+    return res.data;
   } catch (error) {
     throw error;
   }
@@ -101,7 +102,7 @@ export const getRegisteredClinics = async(data) => {
 
 export const editClinic = async(clinicId, data) => {
   try {
-    const res = await apiClient.put(`/api/clinic/${clinicId}`, data);
+    const res = await apiClient.put(`/clinic/${clinicId}`, data);
     return res.data;
   } catch (error) {
     throw error;
@@ -110,7 +111,7 @@ export const editClinic = async(clinicId, data) => {
 
 export const deleteClinic = async(clinicId) => {
   try {
-    const res = await apiClient.delete(`/api/clinic/${clinicId}`);
+    const res = await apiClient.delete(`/clinic/${clinicId}`);
     return res.data;
   } catch (error) {
     throw error;
@@ -120,6 +121,26 @@ export const deleteClinic = async(clinicId) => {
 export const getBlogs = async(data) => {
   try {
     const res = await apiClient.get('/blogs/getAllBlogs', data);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const updateBlog = async(id, formData) => {
+  try {
+    const res = await axiosInstance.put(`/blogs/${id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export const deleteBlog = async(id) => {
+  try {
+    const res = await axiosInstance.delete(`/blogs/${id}`);
     return res.data;
   } catch (error) {
     throw error;

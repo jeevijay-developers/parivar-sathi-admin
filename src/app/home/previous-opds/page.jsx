@@ -74,9 +74,7 @@ const PreviousOPDsPage = () => {
   useEffect(() => {
     setLoading(true);
     getAllPreviousOPDCamps()
-      .then((res) => {
-        console.log("Previous OPDs data: ", res);
-        
+      .then((res) => {   
         setData(res);
         // setTotalPages(res.total ? Math.ceil(res.total / limit) : 1);
       })
